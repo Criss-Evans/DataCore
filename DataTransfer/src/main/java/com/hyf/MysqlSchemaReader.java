@@ -1,5 +1,7 @@
 package com.hyf;
 
+import com.hyf.bean.Reader;
+import com.hyf.bean.SqlBean;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class MysqlSchemaReader{
+public class MysqlSchemaReader extends Reader {
 
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     private static final String URL = "jdbc:mysql://localhost:3306/srb_core?useUnicode=true&characterEncoding=utf8&useSSL=false";
@@ -15,17 +17,12 @@ public class MysqlSchemaReader{
     private static final String PASSWORD = "134685";
     private static final String SQL = "SELECT * FROM ";// 数据库操作
 
-    private String tableName;
-
-    public MysqlSchemaReader(String tableName){
-        this.tableName = tableName;
-    }
 
     /**
      * 获取数据库连接
      * @return
      */
-    public Connection getConnection(){
+    public static Connection getConnection(){
         Connection conn = null;
         try {
             Class.forName(DRIVER);
@@ -42,7 +39,7 @@ public class MysqlSchemaReader{
      * 关闭数据库连接
      * @param conn
      */
-    public void closeConnection(Connection conn) {
+    public static void closeConnection(Connection conn) {
         if(conn != null) {
             try {
                 conn.close();
@@ -57,12 +54,12 @@ public class MysqlSchemaReader{
      * 获取表所有的字段
      * @return
      */
-    public List<String> getColumnNames() {
+    public static List<String> getColumnNames(String tableName) {
         List<String> columnNames = new ArrayList<>();
         //与数据库的连接
         Connection conn = getConnection();
         PreparedStatement pStemt = null;
-        String tableSql = SQL + this.tableName;
+        String tableSql = SQL + tableName;
         try {
             pStemt = conn.prepareStatement(tableSql);
             //结果集元数据
@@ -92,7 +89,7 @@ public class MysqlSchemaReader{
      * @param tableName
      * @return
      */
-    public List<String> getColumnComments(String tableName) {
+    public static List<String> getColumnComments(String tableName) {
         //与数据库的连接
         Connection conn = getConnection();
         PreparedStatement pStemt = null;
@@ -125,7 +122,7 @@ public class MysqlSchemaReader{
      * @param tableName
      * @return
      */
-    public List<String> getColumnTypes(String tableName){
+    public static List<String> getColumnTypes(String tableName){
         List<String> columnTypes = new ArrayList<>();
 
         Connection conn = getConnection();
@@ -152,6 +149,17 @@ public class MysqlSchemaReader{
             }
         }
         return columnTypes;
+    }
+
+    public List<SqlBean> run(String tableName){
+        List<SqlBean> sourceSchema = new ArrayList<>();
+
+        List<String> columnNames = MysqlSchemaReader.getColumnNames(tableName);
+        List<String> columnTypes = MysqlSchemaReader.getColumnTypes(tableName);
+        List<String> columnComments = MysqlSchemaReader.getColumnComments(tableName);
+
+
+        return sourceSchema;
     }
     
 }
