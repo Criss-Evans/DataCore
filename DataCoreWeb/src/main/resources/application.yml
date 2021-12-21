@@ -5,6 +5,9 @@ spring:
     password: hyf134685@
     url: jdbc:mysql://rm-7xvg0ner6l4ve11636o.mysql.rds.aliyuncs.com:3306/data_core?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
 
+server:
+  port: 82
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
